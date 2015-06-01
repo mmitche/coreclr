@@ -1,4 +1,23 @@
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!--
+    $(OS) is set to Unix/Windows_NT. This comes from an environment variable on Windows and MSBuild on Unix.
+  -->
+  <PropertyGroup>
+    <OsEnvironment Condition="'$(OsEnvironment)'==''">$(OS)</OsEnvironment>
+  </PropertyGroup>
+  
+  <!-- Build Tools Versions -->
+  <PropertyGroup>
+    <BuildToolsVersion>1.0.25-prerelease-00050</BuildToolsVersion>
+    <DnxVersion Condition="'$(OsEnvironment)'!='Unix'">1.0.0-beta5-11682</DnxVersion>
+    <DnxVersion Condition="'$(OsEnvironment)'=='Unix'">1.0.0-beta5-11760</DnxVersion>
+    <DnxPackageName Condition="'$(DnxPackageName)' == '' and '$(OsEnvironment)'!='Unix'">dnx-coreclr-win-x86.$(DnxVersion)</DnxPackageName>
+    <DnxPackageName Condition="'$(DnxPackageName)' == '' and '$(OsEnvironment)'=='Unix'">dnx-mono.$(DnxVersion)</DnxPackageName>
+    <RoslynVersion>1.0.0-rc3-20150510-01</RoslynVersion>
+    <RoslynPackageName>Microsoft.Net.ToolsetCompilers</RoslynPackageName>
+  </PropertyGroup>
+  
   <!-- Common properties -->
   <PropertyGroup>
     <!-- Set basic properties and normalize -->
@@ -20,7 +39,6 @@
     <SourceDir>$(__SourceDir)\</SourceDir>
     <SourceDir Condition="'$(__SourceDir)'==''">$(ProjectDir)src\</SourceDir>
 
-    <PackagesGlobalConfig>$(SourceDir).nuget\packages.config</PackagesGlobalConfig>
     <PackagesDir>$(__PackagesDir)\</PackagesDir>
     <PackagesDir Condition="'$(__PackagesDir)'==''">$(ProjectDir)packages\</PackagesDir>
 
@@ -44,6 +62,40 @@
     <TestWorkingDir>$(__TestWorkingDir)\</TestWorkingDir>
     <TestWorkingDir Condition="'$(__TestWorkingDir)'==''">$(RootBinDir)tests\$(BuildOS).$(BuildArch).$(BuildType)\</TestWorkingDir>
   </PropertyGroup>
+  
+  <!-- Common nuget properties -->
+  <PropertyGroup>
+    <NuGetToolPath Condition="'$(NuGetToolPath)'==''">$(PackagesDir)NuGet.exe</NuGetToolPath>
+    <NuGetConfigFile Condition="'$(NuGetConfigFile)'==''">$(SourceDir)NuGet.Config</NuGetConfigFile>
+    <NuGetConfigCommandLine>-ConfigFile "$(NuGetConfigFile)"</NuGetConfigCommandLine>
+
+    <NugetRestoreCommand>"$(NuGetToolPath)"</NugetRestoreCommand>
+    <NugetRestoreCommand>$(NugetRestoreCommand) install</NugetRestoreCommand>
+    <!-- Trim off the last slash so that nuget doesn't get confused and say there are illegal characters on
+         the path. -->
+    <NugetRestoreCommand>$(NugetRestoreCommand) -OutputDirectory "$(PackagesDir.TrimEnd('\\'))"</NugetRestoreCommand>
+    <NugetRestoreCommand>$(NugetRestoreCommand) $(NuGetConfigCommandLine)</NugetRestoreCommand>
+    <NugetRestoreCommand>$(NugetRestoreCommand) -Verbosity detailed</NugetRestoreCommand>
+    <NugetRestoreCommand Condition="'$(OsEnvironment)'=='Unix'">mono $(NuGetRestoreCommand)</NugetRestoreCommand>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <DnxPackageDir Condition="'$(DnxPackageDir)'==''">$(PackagesDir)/$(DnxPackageName)/</DnxPackageDir>
+    <DnuToolPath Condition="'$(DnuToolPath)'=='' and '$(OsEnvironment)'!='Unix'">$(DnxPackageDir)\bin\dnu.cmd</DnuToolPath>
+    <DnuToolPath Condition="'$(DnuToolPath)'=='' and '$(OsEnvironment)'=='Unix'">$(DnxPackageDir)/bin/dnu</DnuToolPath>
+
+    <DnuRestoreCommand>"$(DnuToolPath)"</DnuRestoreCommand>
+    <DnuRestoreCommand>$(DnuRestoreCommand) restore</DnuRestoreCommand>
+    <DnuRestoreCommand>$(DnuRestoreCommand) --packages "$(PackagesDir.TrimEnd('/'))"</DnuRestoreCommand>
+    <DnuRestoreCommand Condition="'$(LockDependencies)' == 'true'">$(DnuRestoreCommand) --lock</DnuRestoreCommand>
+  </PropertyGroup>
+  
+  <!-- Common build tool properties -->
+  <!-- <PropertyGroup>
+    <BuildToolsCoreCLRPackageName>Microsoft.DotNet.BuildTools.CoreCLR</BuildToolsCoreCLRPackageName>
+    <BuildToolsCoreCLRVersion>1.0.2-prerelease</BuildToolsCoreCLRVersion>
+    <BuildToolsCoreCLRLocation>$(ToolsDir)$(BuildToolsCoreCLRPackageName).$(BuildToolsCoreCLRVersion)</BuildToolsCoreCLRLocation>
+  </PropertyGroup> -->
 
   <!-- Setup Nuget properties -->
   <ItemGroup>
@@ -65,34 +117,5 @@
     <TargetsOSX Condition="'$(BuildOS)' == 'OSX'">true</TargetsOSX>
 
     <TargetsUnix Condition="'$(TargetsLinux)' == 'true' or '$(TargetsOSX)' == 'true'">true</TargetsUnix>
-  </PropertyGroup>
-  
-  <!-- Common NuGet properties -->
-  <PropertyGroup>
-    <NuGetToolPath>$(ToolsDir)NuGet.exe</NuGetToolPath>
-    <NuGetConfigFile>$(SourceDir)NuGet.Config</NuGetConfigFile>
-    <NuGetConfigCommandLine
-      Condition="Exists('$(NuGetConfigFile)')">-ConfigFile &quot;$(NuGetConfigFile)&quot;</NuGetConfigCommandLine>
-  </PropertyGroup>
-
-  <!-- Common build tool properties -->
-  <PropertyGroup>
-
-    <BuildToolsCoreCLRPackageName>Microsoft.DotNet.BuildTools.CoreCLR</BuildToolsCoreCLRPackageName>
-    <BuildToolsCoreCLRVersion>1.0.2-prerelease</BuildToolsCoreCLRVersion>
-    <BuildToolsCoreCLRInstallSempahore>$(ToolsDir)BuildTools.$(BuildToolsCoreCLRVersion).installed.semaphore</BuildToolsCoreCLRInstallSempahore>
-
-    <BuildToolsPackageName>Microsoft.DotNet.BuildTools</BuildToolsPackageName>
-    <BuildToolsVersion>1.0.25-prerelease-00050</BuildToolsVersion>
-	<DnxVersion Condition="'$(OsEnvironment)'!='Unix'">1.0.0-beta5-11682</DnxVersion>
-    <DnxVersion Condition="'$(OsEnvironment)'=='Unix'">1.0.0-beta5-11760</DnxVersion>
-    <DnxPackageName Condition="'$(DnxPackageName)' == '' and '$(OsEnvironment)'!='Unix'">dnx-coreclr-win-x86.$(DnxVersion)</DnxPackageName>
-    <DnxPackageName Condition="'$(DnxPackageName)' == '' and '$(OsEnvironment)'=='Unix'">dnx-mono.$(DnxVersion)</DnxPackageName>
-	
-    <BuildToolsCoreCLRTargetInputs>$(MSBuildThisFileFullPath);$(MSBuildThisFileDirectory)build.proj</BuildToolsCoreCLRTargetInputs>
-    <BuildToolsCoreCLRTargetOutputs>$(BuildToolsCoreCLRInstallSempahore)</BuildToolsCoreCLRTargetOutputs>
-
-    <BuildToolsCoreCLRLocation>$(ToolsDir)$(BuildToolsCoreCLRPackageName).$(BuildToolsCoreCLRVersion)</BuildToolsCoreCLRLocation>
-    <BuildToolsLocation>$(ToolsDir)$(BuildToolsPackageName).$(BuildToolsVersion)</BuildToolsLocation>
   </PropertyGroup>
 </Project>

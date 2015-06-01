@@ -1,32 +1,54 @@
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <!-- Build Tools Version -->
+  <!-- Build Tools Versions -->
   <PropertyGroup>
-    <BuildToolsVersion>1.0.21-prerelease</BuildToolsVersion>
+    <BuildToolsVersion>1.0.25-prerelease-00050</BuildToolsVersion>
+    <DnxVersion Condition="'$(OsEnvironment)'!='Unix'">1.0.0-beta5-11682</DnxVersion>
+    <DnxVersion Condition="'$(OsEnvironment)'=='Unix'">1.0.0-beta5-11760</DnxVersion>
+    <DnxPackageName Condition="'$(DnxPackageName)' == '' and '$(OsEnvironment)'!='Unix'">dnx-coreclr-win-x86.$(DnxVersion)</DnxPackageName>
+    <DnxPackageName Condition="'$(DnxPackageName)' == '' and '$(OsEnvironment)'=='Unix'">dnx-mono.$(DnxVersion)</DnxPackageName>
+    <RoslynVersion>1.0.0-rc3-20150510-01</RoslynVersion>
+    <RoslynPackageName>Microsoft.Net.ToolsetCompilers</RoslynPackageName>
   </PropertyGroup>
 
   <!-- Common repo directories -->
   <PropertyGroup>
     <ProjectDir>$(MSBuildThisFileDirectory)</ProjectDir>
     <SourceDir>$(ProjectDir)src\</SourceDir>
-    <PackagesDir>$(SourceDir)packages\</PackagesDir>
+    <PackagesDir>$(ProjectDir)packages\</PackagesDir>
     <ToolsDir>$(PackagesDir)Microsoft.DotNet.BuildTools.$(BuildToolsVersion)\lib\</ToolsDir>
   </PropertyGroup>
 
-
   <!-- Common nuget properties -->
   <PropertyGroup>
-    <NuGetToolPath>$(ToolsDir)NuGet.exe</NuGetToolPath>
-    <NuGetConfigFile>$(SourceDir)NuGet.Config</NuGetConfigFile>
-    <NuGetConfigCommandLine
-      Condition="Exists('$(NuGetConfigFile)')">-ConfigFile &quot;$(NuGetConfigFile)&quot;</NuGetConfigCommandLine>
+    <NuGetToolPath Condition="'$(NuGetToolPath)'==''">$(PackagesDir)NuGet.exe</NuGetToolPath>
+    <NuGetConfigFile Condition="'$(NuGetConfigFile)'==''">$(SourceDir)NuGet.Config</NuGetConfigFile>
+    <NuGetConfigCommandLine>-ConfigFile "$(NuGetConfigFile)"</NuGetConfigCommandLine>
+
+    <NugetRestoreCommand>"$(NuGetToolPath)"</NugetRestoreCommand>
+    <NugetRestoreCommand>$(NugetRestoreCommand) install</NugetRestoreCommand>
+    <NugetRestoreCommand>$(NugetRestoreCommand) -OutputDirectory "$(PackagesDir.TrimEnd('/'))"</NugetRestoreCommand>
+    <NugetRestoreCommand>$(NugetRestoreCommand) $(NuGetConfigCommandLine)</NugetRestoreCommand>
+    <NugetRestoreCommand>$(NugetRestoreCommand) -Verbosity detailed</NugetRestoreCommand>
+    <NugetRestoreCommand Condition="'$(OsEnvironment)'=='Unix'">mono $(NuGetRestoreCommand)</NugetRestoreCommand>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DnxPackageDir Condition="'$(DnxPackageDir)'==''">$(PackagesDir)/$(DnxPackageName)/</DnxPackageDir>
+    <DnuToolPath Condition="'$(DnuToolPath)'=='' and '$(OsEnvironment)'!='Unix'">$(DnxPackageDir)\bin\dnu.cmd</DnuToolPath>
+    <DnuToolPath Condition="'$(DnuToolPath)'=='' and '$(OsEnvironment)'=='Unix'">$(DnxPackageDir)/bin/dnu</DnuToolPath>
+
+    <DnuRestoreCommand>"$(DnuToolPath)"</DnuRestoreCommand>
+    <DnuRestoreCommand>$(DnuRestoreCommand) restore</DnuRestoreCommand>
+    <DnuRestoreCommand>$(DnuRestoreCommand) --packages "$(PackagesDir.TrimEnd('/'))"</DnuRestoreCommand>
+    <DnuRestoreCommand Condition="'$(LockDependencies)' == 'true'">$(DnuRestoreCommand) --lock</DnuRestoreCommand>
   </PropertyGroup>
 
   <!-- Common build tool properties -->
-  <PropertyGroup>
+  <!-- <PropertyGroup>
     <BuildToolsInstallSemaphore>$(ToolsDir)BuildTools.$(BuildToolsVersion).installed.semaphore</BuildToolsInstallSemaphore>
 
     <BuildToolsTargetInputs>$(MSBuildThisFileFullPath);$(MSBuildThisFileDirectory)build.proj</BuildToolsTargetInputs>
     <BuildToolsTargetOutputs>$(BuildToolsInstallSemaphore)</BuildToolsTargetOutputs>
-  </PropertyGroup>
+  </PropertyGroup> -->
 </Project>
