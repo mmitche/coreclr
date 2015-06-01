@@ -15,32 +15,34 @@
     <BuildOS Condition="'$(__BuildOS)' == ''">Windows_NT</BuildOS>
 
     <ProjectDir>$(__ProjectDir)\</ProjectDir>
-    <ProjectDir Condition="'$(__ProjectDir)'==''">$(MSBuildThisFileDirectory)\</ProjectDir>
+    <ProjectDir Condition="'$(__ProjectDir)'==''">$(MSBuildThisFileDirectory)</ProjectDir>
 
     <SourceDir>$(__SourceDir)\</SourceDir>
-    <SourceDir Condition="'$(__SourceDir)'==''">$(ProjectDir)\src\</SourceDir>
+    <SourceDir Condition="'$(__SourceDir)'==''">$(ProjectDir)src\</SourceDir>
 
     <PackagesGlobalConfig>$(SourceDir).nuget\packages.config</PackagesGlobalConfig>
     <PackagesDir>$(__PackagesDir)\</PackagesDir>
-    <PackagesDir Condition="'$(__PackagesDir)'==''">$(ProjectDir)\packages\</PackagesDir>
+    <PackagesDir Condition="'$(__PackagesDir)'==''">$(ProjectDir)packages\</PackagesDir>
 
     <RootBinDir>$(__RootBinDir)\</RootBinDir>
-    <RootBinDir Condition="'$(__RootBinDir)'==''">$(ProjectDir)\bin\</RootBinDir>
+    <RootBinDir Condition="'$(__RootBinDir)'==''">$(ProjectDir)bin\</RootBinDir>
 
     <BinDir>$(__BinDir)\</BinDir>
-    <BinDir Condition="'$(__BinDir)'==''">$(RootBinDir)\Product\$(BuildOS).$(BuildArch).$(BuildType)\</BinDir>
+    <BinDir Condition="'$(__BinDir)'==''">$(RootBinDir)Product\$(BuildOS).$(BuildArch).$(BuildType)\</BinDir>
 
     <!-- We don't append back slash because this path is used by nuget.exe as output directory and it
          fails to write packages to it if the path contains the forward slash.
     -->
     <PackagesBinDir>$(__PackagesBinDir)</PackagesBinDir>
-    <PackagesBinDir Condition="'$(__PackagesBinDir)'==''">$(BinDir)\.nuget</PackagesBinDir>
+    <PackagesBinDir Condition="'$(__PackagesBinDir)'==''">$(BinDir).nuget</PackagesBinDir>
 
+	<!-- Todo...rename toolsdir to something like packagesdir but not to be confused
+	     with packagesbindir above -->
     <ToolsDir>$(__ToolsDir)\</ToolsDir>
-    <ToolsDir Condition="'$(__ToolsDir)'==''">$(RootBinDir)\tools\</ToolsDir>
+    <ToolsDir Condition="'$(__ToolsDir)'==''">$(ProjectDir)packages\</ToolsDir>
 
     <TestWorkingDir>$(__TestWorkingDir)\</TestWorkingDir>
-    <TestWorkingDir Condition="'$(__TestWorkingDir)'==''">$(RootBinDir)\tests\$(BuildOS).$(BuildArch).$(BuildType)\</TestWorkingDir>
+    <TestWorkingDir Condition="'$(__TestWorkingDir)'==''">$(RootBinDir)tests\$(BuildOS).$(BuildArch).$(BuildType)\</TestWorkingDir>
   </PropertyGroup>
 
   <!-- Setup Nuget properties -->
@@ -81,12 +83,16 @@
     <BuildToolsCoreCLRInstallSempahore>$(ToolsDir)BuildTools.$(BuildToolsCoreCLRVersion).installed.semaphore</BuildToolsCoreCLRInstallSempahore>
 
     <BuildToolsPackageName>Microsoft.DotNet.BuildTools</BuildToolsPackageName>
-    <BuildToolsVersion>1.0.25-prerelease-00009</BuildToolsVersion>
-
+    <BuildToolsVersion>1.0.25-prerelease-00050</BuildToolsVersion>
+	<DnxVersion Condition="'$(OsEnvironment)'!='Unix'">1.0.0-beta5-11682</DnxVersion>
+    <DnxVersion Condition="'$(OsEnvironment)'=='Unix'">1.0.0-beta5-11760</DnxVersion>
+    <DnxPackageName Condition="'$(DnxPackageName)' == '' and '$(OsEnvironment)'!='Unix'">dnx-coreclr-win-x86.$(DnxVersion)</DnxPackageName>
+    <DnxPackageName Condition="'$(DnxPackageName)' == '' and '$(OsEnvironment)'=='Unix'">dnx-mono.$(DnxVersion)</DnxPackageName>
+	
     <BuildToolsCoreCLRTargetInputs>$(MSBuildThisFileFullPath);$(MSBuildThisFileDirectory)build.proj</BuildToolsCoreCLRTargetInputs>
     <BuildToolsCoreCLRTargetOutputs>$(BuildToolsCoreCLRInstallSempahore)</BuildToolsCoreCLRTargetOutputs>
 
-    <BuildToolsCoreCLRLocation>$(ToolsDir)\$(BuildToolsCoreCLRPackageName).$(BuildToolsCoreCLRVersion)</BuildToolsCoreCLRLocation>
-    <BuildToolsLocation>$(ToolsDir)\$(BuildToolsPackageName).$(BuildToolsVersion)</BuildToolsLocation>
+    <BuildToolsCoreCLRLocation>$(ToolsDir)$(BuildToolsCoreCLRPackageName).$(BuildToolsCoreCLRVersion)</BuildToolsCoreCLRLocation>
+    <BuildToolsLocation>$(ToolsDir)$(BuildToolsPackageName).$(BuildToolsVersion)</BuildToolsLocation>
   </PropertyGroup>
 </Project>
