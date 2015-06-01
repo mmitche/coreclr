@@ -93,7 +93,7 @@
          but not restore from PackagesDir as happens for test project restore since PackagesDir
          will not be under src.  To workaround, copy our nuget.config to packages. -->
     <Copy Condition="Exists('$(NuGetConfigFile)')" SourceFiles="$(NuGetConfigFile)" DestinationFolder="$(PackagesDir)" SkipUnchangedFiles="true" />
-    <Copy Condition="Exists('$(NuGetConfigFile)')" SourceFiles="$(NuGetConfigFile)" DestinationFolder="$(IntermediateOutputRootPath)" SkipUnchangedFiles="true" />
+    <!-- <Copy Condition="Exists('$(NuGetConfigFile)')" SourceFiles="$(NuGetConfigFile)" DestinationFolder="$(IntermediateOutputRootPath)" SkipUnchangedFiles="true" /> -->
 
     <!-- Add DNU and Roslyn tool execute rights -->
     <Exec Condition="'$(OsEnvironment)'=='Unix'"
