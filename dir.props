@@ -10,12 +10,15 @@
   <!-- Build Tools Versions -->
   <PropertyGroup>
     <BuildToolsVersion>1.0.25-prerelease-00050</BuildToolsVersion>
+    <BuildToolsCoreCLRVersion>1.0.2-prerelease</BuildToolsCoreCLRVersion>
     <DnxVersion Condition="'$(OsEnvironment)'!='Unix'">1.0.0-beta5-11682</DnxVersion>
     <DnxVersion Condition="'$(OsEnvironment)'=='Unix'">1.0.0-beta5-11760</DnxVersion>
     <DnxPackageName Condition="'$(DnxPackageName)' == '' and '$(OsEnvironment)'!='Unix'">dnx-coreclr-win-x86.$(DnxVersion)</DnxPackageName>
     <DnxPackageName Condition="'$(DnxPackageName)' == '' and '$(OsEnvironment)'=='Unix'">dnx-mono.$(DnxVersion)</DnxPackageName>
     <RoslynVersion>1.0.0-rc3-20150510-01</RoslynVersion>
     <RoslynPackageName>Microsoft.Net.ToolsetCompilers</RoslynPackageName>
+    <BuildToolsCoreCLRPackageName>Microsoft.DotNet.BuildTools.CoreCLR</BuildToolsCoreCLRPackageName>
+    <BuildToolsCoreCLRLocation>$(ToolsDir)$(BuildToolsCoreCLRPackageName).$(BuildToolsCoreCLRVersion)</BuildToolsCoreCLRLocation>
   </PropertyGroup>
   
   <!-- Common properties -->
@@ -53,12 +56,11 @@
     -->
     <PackagesBinDir>$(__PackagesBinDir)</PackagesBinDir>
     <PackagesBinDir Condition="'$(__PackagesBinDir)'==''">$(BinDir).nuget</PackagesBinDir>
-
-	<!-- Todo...rename toolsdir to something like packagesdir but not to be confused
-	     with packagesbindir above -->
-    <ToolsDir>$(__ToolsDir)\</ToolsDir>
-    <ToolsDir Condition="'$(__ToolsDir)'==''">$(ProjectDir)packages\</ToolsDir>
-
+    
+    <ToolsDir Condition="'$(ToolsDir)'==''">$(PackagesDir)Microsoft.DotNet.BuildTools.$(BuildToolsVersion)/lib/</ToolsDir>
+    <!-- Directory for the CoreCLR tools (BCLRewriter, etc.) -->
+    <CoreCLRToolsDir>$(PackagesDir)Microsoft.DotNet.BuildTools.CoreCLR.$(BuildToolsCoreCLRVersion)/</CoreCLRToolsDir>
+    
     <TestWorkingDir>$(__TestWorkingDir)\</TestWorkingDir>
     <TestWorkingDir Condition="'$(__TestWorkingDir)'==''">$(RootBinDir)tests\$(BuildOS).$(BuildArch).$(BuildType)\</TestWorkingDir>
   </PropertyGroup>
