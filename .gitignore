@@ -23,6 +23,9 @@ bld/
 [Oo]bj/
 msbuild.log
 
+# Nuget temp files
+project.lock.json
+
 # Visual Studio 2015
 .vs/
 
