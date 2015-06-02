@@ -3,6 +3,7 @@
   
   <ItemGroup>
     <ExcludeProjects Include="TestWrappers*\*\*.csproj" />
+	<ExcludeProjects Include="**\cs_template.proj" />
   </ItemGroup>
   
   <ItemGroup>
