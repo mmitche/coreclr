@@ -163,13 +163,16 @@
           "lib/DNXCore50/System.Text.Encoding.Extensions.dll"
         ]
       },
-      "System.Threading/4.0.0-beta-22927": {
+      "System.Threading/4.0.10-beta-22927": {
         "dependencies": {
           "System.Runtime": "4.0.0-beta-22927",
           "System.Threading.Tasks": "4.0.0-beta-22927"
         },
         "compile": [
           "ref/any/System.Threading.dll"
+        ],
+        "runtime": [
+          "lib/DNXCore50/System.Threading.dll"
         ]
       },
       "System.Threading.Tasks/4.0.10-beta-22927": {
@@ -389,18 +392,18 @@
         "runtimes/win8-aot/lib/netcore50/System.Text.Encoding.Extensions.dll"
       ]
     },
-    "System.Threading/4.0.0-beta-22927": {
-      "sha512": "vIk4IMiM5Aj30eyFWeXg5M6wU3ir6+40TSbQQ3FTMvZF1XNe3auqhqT2pyyI217s60zBDSk2GeJr60oqQOghLQ==",
+    "System.Threading/4.0.10-beta-22927": {
+      "sha512": "WQHiDnaGlg07qiI09vvY/G/jjax4IyTBstRQFBQrcQm2ZHv8CtdoJnN3WshOUHaK8xcJL5x6/K5S9BZzCeOn2g==",
       "files": [
-        "License.rtf",
-        "System.Threading.4.0.0-beta-22927.nupkg",
-        "System.Threading.4.0.0-beta-22927.nupkg.sha512",
+        "System.Threading.4.0.10-beta-22927.nupkg",
+        "System.Threading.4.0.10-beta-22927.nupkg.sha512",
         "System.Threading.nuspec",
-        "lib/net45/_._",
-        "lib/win8/_._",
+        "lib/DNXCore50/System.Threading.dll",
+        "lib/net46/System.Threading.dll",
+        "lib/netcore50/System.Threading.dll",
         "ref/any/System.Threading.dll",
-        "ref/net45/_._",
-        "ref/win8/_._"
+        "ref/net46/System.Threading.dll",
+        "runtimes/win8-aot/lib/netcore50/System.Threading.dll"
       ]
     },
     "System.Threading.Tasks/4.0.10-beta-22927": {
@@ -435,7 +438,7 @@
       "System.Console >= 4.0.0-beta-*",
       "System.Runtime >= 4.0.20-beta-*",
       "System.Runtime.Extensions >= 4.0.10-beta-*",
-      "System.Threading >= 4.0.0-beta-*",
+      "System.Threading >= 4.0.10-beta-*",
       "System.Threading.Thread >= 4.0.0-beta-*"
     ],
     "DNXCore,Version=v5.0": []
