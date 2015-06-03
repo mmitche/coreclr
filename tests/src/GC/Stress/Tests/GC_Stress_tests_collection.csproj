@@ -19,7 +19,7 @@
     <PropertyGroup>
       <GenerateRunScript>false</GenerateRunScript>
     </PropertyGroup>
-    <MSBuild Projects="cs_template.proj" Properties="AssemblyName1=%(AllSourceFiles.FileName);IntermediateOutputPath=$(IntermediateOutputPath)\%(AllSourceFiles.FileName)\" />
+    <MSBuild Projects="cs_template.csproj" Properties="AssemblyName1=%(AllSourceFiles.FileName);IntermediateOutputPath=$(IntermediateOutputPath)\%(AllSourceFiles.FileName)\" />
   </Target>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>
