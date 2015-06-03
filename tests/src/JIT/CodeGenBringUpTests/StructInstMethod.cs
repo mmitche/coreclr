@@ -2,7 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 //
 
-
+#pragma warning disable 3005 // Identifier 'Point.X' differing only in case is not CLS-compliant
+ 
 using System;
 using System.Runtime.CompilerServices;
 

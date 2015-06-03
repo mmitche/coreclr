@@ -2,6 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 //
 
+#pragma warning disable 0219
+#pragma warning disable 0429
+
 using System;
 using System.Threading;
 class testout1
