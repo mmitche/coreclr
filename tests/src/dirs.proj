@@ -1,9 +1,10 @@
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="dir.props" />  
   
+  <!-- Exclude the template projects.  These are invoked with different parameters to build a bunch of tests
+       for a given directory -->
   <ItemGroup>
-    <ExcludeProjects Include="TestWrappers*\*\*.csproj" />
-	<ExcludeProjects Include="**\cs_template.proj" />
+	<ExcludeProjects Include="**\cs_template.csproj" />
   </ItemGroup>
   
   <ItemGroup>

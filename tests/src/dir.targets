@@ -9,6 +9,12 @@
   <Import Project="$(ToolsDir)Build.Common.targets" Condition="Exists('$(ToolsDir)Build.Common.targets')" />
   <Import Project="..\override.targets" Condition="Exists('..\override.targets')"/>
 
+  <!-- We enable auto-unification of assembly references after importing the common targets.  Binding redirects are not needed
+       for coreclr since it auto-unifies, so the warnings we get without this setting are just noise -->
+  <PropertyGroup>
+    <AutoUnifyAssemblyReferences>true</AutoUnifyAssemblyReferences>
+  </PropertyGroup>
+  
   <PropertyGroup>
     <GenerateRunScript Condition="'$(OutputType.ToUpper())' != 'EXE' And '$(GenerateRunScript)' == ''">false</GenerateRunScript>
   </PropertyGroup>
