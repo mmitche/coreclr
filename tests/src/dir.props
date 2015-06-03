@@ -8,9 +8,9 @@
     <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <!-- Disable a bunch of CLS compliance warnings -->
-    <NoWarn>$(NoWarn),3001,3002,3003,3005,3008</NoWarn>
+    <NoWarn>$(NoWarn),3001,3002,3003,3005,3008,3026</NoWarn>
     <!-- Disable various warnings not interesting for these tests -->
-    <NoWarn>$(NoWarn),0649,0162,0219,0164,0414,1717</NoWarn>
+    <NoWarn>$(NoWarn),0649,0162,0169,0219,0164,0414,1717</NoWarn>
   </PropertyGroup>
 
   <!-- Enable alternative JIT for testing if specified -->
