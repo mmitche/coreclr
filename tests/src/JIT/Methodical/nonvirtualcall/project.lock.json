@@ -185,17 +185,6 @@
         "runtime": [
           "lib/DNXCore50/System.Threading.Tasks.dll"
         ]
-      },
-      "System.Threading.Thread/4.0.0-beta-22927": {
-        "dependencies": {
-          "System.Runtime": "4.0.0-beta-22927"
-        },
-        "compile": [
-          "ref/any/System.Threading.Thread.dll"
-        ],
-        "runtime": [
-          "lib/DNXCore50/System.Threading.Thread.dll"
-        ]
       }
     }
   },
@@ -419,27 +408,13 @@
         "ref/net46/System.Threading.Tasks.dll",
         "runtimes/win8-aot/lib/netcore50/System.Threading.Tasks.dll"
       ]
-    },
-    "System.Threading.Thread/4.0.0-beta-22927": {
-      "sha512": "mp5OOIS4zWYMJiQLNkmKG2ig8WQYl/dh5yEH26ZPBb6pR3RdsSUU2Epo+rLBu9TxQftZ03Xakr6ggJxZvfMkrg==",
-      "files": [
-        "System.Threading.Thread.4.0.0-beta-22927.nupkg",
-        "System.Threading.Thread.4.0.0-beta-22927.nupkg.sha512",
-        "System.Threading.Thread.nuspec",
-        "lib/DNXCore50/System.Threading.Thread.dll",
-        "lib/net46/System.Threading.Thread.dll",
-        "ref/any/System.Threading.Thread.dll",
-        "ref/net46/System.Threading.Thread.dll"
-      ]
     }
   },
   "projectFileDependencyGroups": {
     "": [
       "System.Console >= 4.0.0-beta-*",
       "System.Runtime >= 4.0.20-beta-*",
-      "System.Runtime.Extensions >= 4.0.10-beta-*",
-      "System.Threading >= 4.0.10-beta-*",
-      "System.Threading.Thread >= 4.0.0-beta-*"
+      "System.Runtime.Extensions >= 4.0.10-beta-*"
     ],
     "DNXCore,Version=v5.0": []
   }

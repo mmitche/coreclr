@@ -32,7 +32,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DetourHelpers.cs" />
-    <Compile Include="key_v1.cs" />
     <Compile Include="LoaderClass.cs" />
     <Compile Include="ReliabilityConfiguration.cs" />
     <Compile Include="ReliabilityFramework.cs" />
