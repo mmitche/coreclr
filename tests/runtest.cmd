@@ -83,8 +83,8 @@ set __TestRunBuildLog=%__LogsDir%\TestRunResults_%__BuildOS%__%__BuildArch%__%__
 set __TestRunHtmlLog=%__LogsDir%\TestRun_%__BuildOS%__%__BuildArch%__%__BuildType%.html
 set __TestRunXmlLog=%__LogsDir%\TestRun_%__BuildOS%__%__BuildArch%__%__BuildType%.xml
 
-echo "Core_Root that will be used is : %Core_Root%"
-echo "Starting The Test Run .. "
+echo Core_Root that will be used is: %Core_Root%
+echo Starting The Test Run ...
 if  "%__SkipWrapperGeneration%"=="true" goto :preptests
 
 :: Log build command line
@@ -115,8 +115,8 @@ set _buildpostfix=
 set _buildappend=
 if not "%noCore_RootSet%"=="true" goto :runtests 
 set Core_Root=%XunitTestBinBase%\Tests\Core_Root
-echo "Using Default Core_Root as %Core_Root% " 
-echo "Copying Built binaries from  %__BinDir% to %Core_Root%"
+echo Using Default Core_Root as %Core_Root%
+echo Copying Built binaries from  %__BinDir% to %Core_Root%
 if exist %Core_Root% rd /s /q %Core_Root%
 md %Core_Root%
 xcopy /s %__BinDir% %Core_Root%
@@ -129,12 +129,14 @@ if ERRORLEVEL 1 (
 )
 
 :runtests
-echo %_buildprefix% %_msbuildexe% "%__ProjectFilesDir%runtest.proj" /p:NoBuild=true /nologo /maxcpucount /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%__TestRunBuildLog%";Append %1 %_buildpostfix% /clp:showcommandline
+echo %_buildprefix% %_msbuildexe% "%__ProjectFilesDir%runtest.proj" /p:NoBuild=true /nologo /maxcpucount /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%__TestRunBuildLog%";Append %1 %_buildpostfix%
+%_buildprefix% %_msbuildexe% "%__ProjectFilesDir%runtest.proj" /p:NoBuild=true /nologo /maxcpucount /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%__TestRunBuildLog%";Append %1 %_buildpostfix%
 exit /b %ERRORLEVEL%
 
 :PerformXunitWrapperBuild
 
 echo %_buildprefix% %_msbuildexe% "%__ProjectFilesDir%runtest.proj" /p:NoRun=true /nologo /maxcpucount /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%__XunitWrapperBuildLog%";Append %1  %_buildappend%%_buildpostfix%
+%_buildprefix% %_msbuildexe% "%__ProjectFilesDir%runtest.proj" /p:NoRun=true /nologo /maxcpucount /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%__XunitWrapperBuildLog%";Append %1  %_buildappend%%_buildpostfix%
 exit /b %ERRORLEVEL%
 
 :Usage

@@ -4,7 +4,7 @@
 
   <PropertyGroup>
     <XunitTestBinBase Condition="'$(XunitTestBinBase)'==''" >$(BaseOutputPathWithConfig)</XunitTestBinBase>
-    <XunitWrapperGeneratedCSDirBase>$(SourceDir)\TestWrappers_$(Platform)_$(Configuration)\</XunitWrapperGeneratedCSDirBase>
+    <XunitWrapperGeneratedCSDirBase>$(SourceDir)\TestWrappers\$(Platform)_$(Configuration)\</XunitWrapperGeneratedCSDirBase>
     <XunitWrapperOutputIntermediatedDirBase>$(XunitTestBinBase)\Tests\</XunitWrapperOutputIntermediatedDirBase>
     <MSBuildEnableAllPropertyFunctions>1</MSBuildEnableAllPropertyFunctions>
   </PropertyGroup>
@@ -99,11 +99,11 @@ $(_XunitEpilog)
       <Name>coreclr</Name>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="%24([MSBuild]::GetDirectoryNameOfFileAbove(%24(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
   <PropertyGroup>
      <OutDir>$(XunitWrapperOutputIntermediatedDirBase)\XunitRunner\</OutDir>
      <OutputPath>$(XunitWrapperOutputIntermediatedDirBase)\XunitRunner\</OutputPath>
   </PropertyGroup>
-  <Import Project="%24([MSBuild]::GetDirectoryNameOfFileAbove(%24(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>
   ]]>
       </XunitWrapperGenCsProj>

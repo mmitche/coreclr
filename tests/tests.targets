@@ -6,6 +6,12 @@
   <ItemGroup>
     <_SkipTestAssemblies Include="$(SkipTestAssemblies)" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <TestTargetFramework Include="DNXCore,Version=v5.0">
+      <Folder>dnxcore50</Folder>
+    </TestTargetFramework>
+  </ItemGroup>
 
   <PropertyGroup>
       <TestAssemblyDir Condition="'$(TestAssemblyDir)' == ''">$(BaseOutputPathWithConfig)\tests\XunitRunner\</TestAssemblyDir>
