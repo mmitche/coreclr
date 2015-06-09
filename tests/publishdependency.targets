@@ -2,7 +2,6 @@
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <UsingTask TaskName="ResolveNuGetPackageAssets" AssemblyFile="$(ToolsDir)Microsoft.DotNet.Build.Tasks.dll"/>
-
   
   <ItemGroup>
     <TestTargetFramework Include="ASP.NetCore, version=v5.0">
@@ -10,15 +9,17 @@
     </TestTargetFramework>
   </ItemGroup>
 
+  <!-- This file contains the dependencies for the execution each test. -->
   <PropertyGroup>
     <TestRuntimeProjectJson>$(MSBuildThisFileDirectory)src\runtime\project.json</TestRuntimeProjectJson>
+    <HarnessRuntimeProjectJson>$(MSBuildThisFileDirectory)src\Tests\project.json</HarnessRuntimeProjectJson>
   </PropertyGroup>
   
   <Target Name="RestoreTestRuntimePackage"
-          BeforeTargets="CopyDependecyToCoreRoot"
-          Condition="'$(IsTestProject)' == 'true'">
+          BeforeTargets="CopyDependecyToCoreRoot">
 
     <Exec Command="$(DnuRestoreCommand) &quot;$(TestRuntimeProjectJson)&quot;" StandardOutputImportance="Low" CustomErrorRegularExpression="^Unable to locate .*" />
+    <Exec Command="$(DnuRestoreCommand) &quot;$(HarnessRuntimeProjectJson)&quot;" StandardOutputImportance="Low" CustomErrorRegularExpression="^Unable to locate .*" />
   </Target>
   
   <ItemGroup>

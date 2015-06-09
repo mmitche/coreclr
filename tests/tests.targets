@@ -9,7 +9,7 @@
   
   <ItemGroup>
     <TestTargetFramework Include="DNXCore,Version=v5.0">
-      <Folder>dnxcore50</Folder>
+      <Folder>aspnetcore50</Folder>
     </TestTargetFramework>
   </ItemGroup>
 

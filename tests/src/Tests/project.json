@@ -1,5 +1,8 @@
 {
   "dependencies": {
+    "Microsoft.NETCore.Runtime.ApiSets-x86": "1.0.0-beta-*",
+    "Microsoft.NETCore.Runtime.CoreCLR.TestHost-x86": "1.0.0-beta-*",
+    "Microsoft.NETCore.Runtime.CoreCLR-x86": "1.0.0-beta-*",
     "xunit": "2.0.0-beta5-build2785",
     "xunit.abstractions.netcore": "1.0.0-prerelease",
     "xunit.assert": "2.0.0-beta5-build2785",
