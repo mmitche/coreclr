@@ -4,23 +4,10 @@
   <UsingTask TaskName="ResolveNuGetPackageAssets" AssemblyFile="$(ToolsDir)Microsoft.DotNet.Build.Tasks.dll"/>
   
   <ItemGroup>
-    <TestTargetFramework Include="ASP.NetCore, version=v5.0">
+    <TestTargetFramework Include="DNXCore,Version=v5.0">
       <Folder>dnxcore50</Folder>
     </TestTargetFramework>
   </ItemGroup>
-
-  <!-- This file contains the dependencies for the execution each test. -->
-  <PropertyGroup>
-    <TestRuntimeProjectJson>$(MSBuildThisFileDirectory)src\runtime\project.json</TestRuntimeProjectJson>
-    <HarnessRuntimeProjectJson>$(MSBuildThisFileDirectory)src\Tests\project.json</HarnessRuntimeProjectJson>
-  </PropertyGroup>
-  
-  <Target Name="RestoreTestRuntimePackage"
-          BeforeTargets="CopyDependecyToCoreRoot">
-
-    <Exec Command="$(DnuRestoreCommand) &quot;$(TestRuntimeProjectJson)&quot;" StandardOutputImportance="Low" CustomErrorRegularExpression="^Unable to locate .*" />
-    <Exec Command="$(DnuRestoreCommand) &quot;$(HarnessRuntimeProjectJson)&quot;" StandardOutputImportance="Low" CustomErrorRegularExpression="^Unable to locate .*" />
-  </Target>
   
   <ItemGroup>
     <AllProjectJsonLockFiles Include="$(SourceDir)**\*\project.lock.json"/>
@@ -33,6 +20,7 @@
     <ItemGroup>
       <ProjectJsonLockFileExclude Include="$(SourceDir).nuget\project.lock.json" />
       <ProjectJsonLockFileExclude Include="$(SourceDir)Test*\**\project.lock.json" />
+      <ProjectJsonLockFileExclude Include="$(SourceDir)Common\Coreclr.TestWrapper\**\project.lock.json" />
       <ProjectJsonLockFileExclude Include="$(SourceDir)packages\**\*\project.lock.json" />
     </ItemGroup>
 
