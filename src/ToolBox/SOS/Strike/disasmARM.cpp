@@ -21,9 +21,9 @@
 
 #include "disasm.h"
 
-#include "..\..\..\inc\corhdr.h"
-#include "..\..\..\inc\cor.h"
-#include "..\..\..\inc\dacprivate.h"
+#include "../../../inc/corhdr.h"
+#include "../../../inc/cor.h"
+#include "../../../inc/dacprivate.h"
 
 namespace ARMGCDump
 {
