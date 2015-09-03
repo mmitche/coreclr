@@ -16,10 +16,8 @@
 
 #include "strike.h"
 #include "util.h"
-#include <dbghelp.h>
-
-
 #include "disasm.h"
+#include <dbghelp.h>
 
 #include "../../../inc/corhdr.h"
 #include "../../../inc/cor.h"
