@@ -185,9 +185,12 @@ endfunction()
 # Includes
 
 if (WIN32)
+  # Set the CMAKE_CONFIGURATION_TYPES to add TEST
+  set(CMAKE_CONFIGURATION_TYPES "Debug;Test;Release;RelWithDebInfo" CACHE STRING "" FORCE) 
+        
   # For multi-configuration toolset (as Visual Studio)
   # set the different configuration defines.
-  foreach (Config DEBUG RELEASE RELWITHDEBINFO)
+  foreach (Config DEBUG TEST RELEASE RELWITHDEBINFO)
     foreach (Definition IN LISTS CLR_DEFINES_${Config}_INIT)
       set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:${Config}>:${Definition}>)
     endforeach (Definition)
@@ -195,7 +198,7 @@ if (WIN32)
 
 elseif (CLR_CMAKE_PLATFORM_UNIX)
   # Set the values to display when interactively configuring CMAKE_BUILD_TYPE
-  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "DEBUG;RELEASE;RELWITHDEBINFO")
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "DEBUG;TEST;RELEASE;RELWITHDEBINFO")
 
   # Use uppercase CMAKE_BUILD_TYPE for the string comparisons below
   string(TOUPPER ${CMAKE_BUILD_TYPE} UPPERCASE_CMAKE_BUILD_TYPE)
@@ -205,14 +208,17 @@ elseif (CLR_CMAKE_PLATFORM_UNIX)
   if (UPPERCASE_CMAKE_BUILD_TYPE STREQUAL DEBUG)
     # First DEBUG
     set_property(DIRECTORY  PROPERTY COMPILE_DEFINITIONS ${CLR_DEFINES_DEBUG_INIT})
+  elseif (UPPERCASE_CMAKE_BUILD_TYPE STREQUAL TEST)
+    # Then TEST
+    set_property(DIRECTORY PROPERTY COMPILE_DEFINITIONS ${CLR_DEFINES_TEST_INIT})
   elseif (UPPERCASE_CMAKE_BUILD_TYPE STREQUAL RELEASE)
     # Then RELEASE
     set_property(DIRECTORY PROPERTY COMPILE_DEFINITIONS ${CLR_DEFINES_RELEASE_INIT})
   elseif (UPPERCASE_CMAKE_BUILD_TYPE STREQUAL RELWITHDEBINFO)
     # And then RELWITHDEBINFO
-    set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS ${CLR_DEFINES_RELWITHDEBINFO_INIT})
+    set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS ${CLR_DEFINES_3_INIT})
   else ()
-    message(FATAL_ERROR "Unknown build type! Set CMAKE_BUILD_TYPE to DEBUG, RELEASE, or RELWITHDEBINFO!")
+    message(FATAL_ERROR "Unknown build type! Set CMAKE_BUILD_TYPE to DEBUG, TEST, RELEASE, or RELWITHDEBINFO!")
   endif ()
 
 endif(WIN32)
@@ -261,7 +267,7 @@ if (CLR_CMAKE_PLATFORM_UNIX)
   #-fms-extensions         Accept some non-standard constructs supported by the Microsoft compiler
 
   # set the CLANG sanitizer flags for debug build
-  if(UPPERCASE_CMAKE_BUILD_TYPE STREQUAL DEBUG)
+  if(UPPERCASE_CMAKE_BUILD_TYPE STREQUAL DEBUG OR UPPERCASE_CMAKE_BUILD_TYPE STREQUAL TEST)
     # obtain settings from running enablesanitizers.sh
     string(FIND "$ENV{DEBUG_SANITIZERS}" "asan" __ASAN_POS)
     string(FIND "$ENV{DEBUG_SANITIZERS}" "ubsan" __UBSAN_POS)
@@ -289,7 +295,7 @@ if (CLR_CMAKE_PLATFORM_UNIX)
       # -Wl and --gc-sections: drop unused sections\functions (similar to Windows /Gy function-level-linking)
       set(CMAKE_SHARED_LINKER_FLAGS_DEBUG "${CMAKE_SHARED_LINKER_FLAGS_DEBUG} ${CLR_SANITIZE_LINK_FLAGS} -Wl,--gc-sections")
     endif ()
-  endif(UPPERCASE_CMAKE_BUILD_TYPE STREQUAL DEBUG)
+  endif(UPPERCASE_CMAKE_BUILD_TYPE STREQUAL DEBUG OR UPPERCASE_CMAKE_BUILD_TYPE STREQUAL TEST)
 
   add_subdirectory(src/ToolBox/SOS/lldbplugin)
   add_subdirectory(src/pal)
