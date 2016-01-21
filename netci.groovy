@@ -380,7 +380,7 @@ combinedScenarios.each { scenario ->
                         switch (scenario) {
                             case 'pri1':
                                 // The pri1 build isn't necessary except for os's in the cross list or Windows_NT (native OS runs)
-                                if (os != 'Windows_NT' && !(os in Constants.crossList)) {
+                                if (os != 'Windows_NT') {
                                     return
                                 }
                                 // Only x64 for now
@@ -390,7 +390,7 @@ combinedScenarios.each { scenario ->
                                 break
                             case 'ilrt':
                                 // The ilrt build isn't necessary except for os's in the cross list or Windows_NT (native OS runs)
-                                if (os != 'Windows_NT' && !(os in Constants.crossList)) {
+                                if (os != 'Windows_NT') {
                                     return
                                 }
                                 // Only x64 for now
@@ -601,8 +601,10 @@ combinedScenarios.each { scenario ->
                     def lowerConfiguration = configuration.toLowerCase()
                     def osGroup = getOSGroup(os)
                     def jobName = getJobName(configuration, architecture, os, scenario, false) + "_tst"
+                    // We always use the default scenario for the input coreclr build, because the
+                    // other scenarios don't have builds (because the coreclr doesn't vary
                     def inputCoreCLRBuildName = Utilities.getFolderName(project) + '/' + 
-                        Utilities.getFullJobName(project, getJobName(configuration, architecture, os, scenario, false), isPR)
+                        Utilities.getFullJobName(project, getJobName(configuration, architecture, os, 'default', false), isPR)
                     // If this is a stress scenario, there isn't any difference in the build job
                     // so we didn't create a build only job for windows_nt specific to that stress mode.  Just copy
                     // from the default scenario
