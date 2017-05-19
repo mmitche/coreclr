@@ -1,7 +1,7 @@
 @Library('dotnet-ci') _
 
 // Builds and submits tests given the input parameters
-def call(String config) {
+def call(String config, String architecture) {
     simpleNode('Windows_NT','latest') {
         stage ('Checkout source') {
             checkout scm
