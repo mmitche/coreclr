@@ -26,6 +26,8 @@ simpleNode('Windows_NT','latest') {
     }
     // Now we depend on the tests build pipeline
     stage ('Build Tests') {
-
+        // Loads the other script so it can be invoked 
+        def buildTests = 'buildpipeline/portable-tests.groovy'
+        buildTests(Config)
     }
 }
