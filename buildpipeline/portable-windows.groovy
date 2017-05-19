@@ -22,32 +22,10 @@ simpleNode('Windows_NT','latest') {
     }
     stage ('Build Product') {
         // Why is release always being passed?
-        bat ".\\build.cmd x64 ${Config} skiptests skipbuildpackages -skiprestore -disableoss -portable -- /p:ConfigurationGroup=Release"
+        bat ".\\build.cmd x64 ${Config} skiptests skipbuildpackages -skiprestore -disableoss -portable"
     }
-    stage ('Submit To Helix For Testing') {
-        // Bind the credentials
-        withCredentials([string(credentialsId: 'CloudDropAccessToken', variable: 'CloudDropAccessToken'),
-                         string(credentialsId: 'OutputCloudResultsAccessToken', variable: 'OutputCloudResultsAccessToken')]) {
-            // Ask the CI SDK for a Helix source that makes sense.  This ensures that this pipeline works for both PR and non-PR cases
-            def helixSource = getHelixSource()
-            // Ask the CI SDK for a Build that makes sense.  We currently use the hash for the build
-            def helixBuild = getCommit()
-            // Get the user that should be associated with the submission
-            def helixCreator = getUser()
-            
-            // Target queues
-            def targetHelixQueues = ['Windows.10.Amd64.Open',
-                                     'Windows.10.Nano.Amd64.Open',
-                                     'Windows.7.Amd64.Open',
-                                     'Windows.81.Amd64.Open']
+    // Now we depend on the tests build pipeline
+    stage ('Build Tests') {
 
-            bat "\"%VS140COMNTOOLS%\\VsDevCmd.bat\" && msbuild src\\upload-tests.proj /p:ArchGroup=x64 /p:ConfigurationGroup=${Config} /p:TestProduct=corefx /p:TimeoutInSeconds=1200 /p:TargetOS=Windows_NT /p:HelixJobType=test/functional/portable/cli/ /p:HelixSource=${helixSource} /p:BuildMoniker=${helixBuild} /p:HelixCreator=${helixCreator} /p:CloudDropAccountName=dotnetbuilddrops /p:CloudResultsAccountName=dotnetjobresults /p:CloudDropAccessToken=%CloudDropAccessToken% /p:CloudResultsAccessToken=%OutputCloudResultsAccessToken% /p:HelixApiEndpoint=https://helix.dot.net/api/2017-04-14/jobs /p:TargetQueues=\"${targetHelixQueues.join(',')}\" /p:HelixLogFolder= /p:HelixLogFolder=${WORKSPACE}\\${logFolder}\\ /p:HelixCorrelationInfoFileName=SubmittedHelixRuns.txt"
-
-            submittedHelixJson = readJSON file: "${logFolder}\\SubmittedHelixRuns.txt"
-        }
     }
-}
-
-stage ('Execute Tests') {
-    waitForHelixRuns(submittedHelixJson, "Windows x64 Tests - ${Config}")
 }
