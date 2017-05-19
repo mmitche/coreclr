@@ -19,7 +19,7 @@ def windowsPipeline = Pipeline.createPipelineForGithub(this, project, branch, 'b
 	[/*'Debug', 'Checked', */'Release'].each { configurationGroup ->
 		['x64'].each { architecture ->
             def parameters = ['Config':configurationGroup, 'Architecture':architecture]
-            windowsPipeline.triggerPipelineOnEveryGithubPR("${osName} ${configurationGroup} Build", "(?i).*test\\W+portable\\W+windows\\W+${configurationGroup}\\W+pipeline.*", parameters)
+            windowsPipeline.triggerPipelineOnEveryGithubPR("Win ${architecture} ${configurationGroup} Build", "(?i).*test\\W+portable\\W+windows\\W+${configurationGroup}\\W+pipeline.*", parameters)
 		}
 	}
 }
