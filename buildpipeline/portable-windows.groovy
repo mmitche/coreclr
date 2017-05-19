@@ -3,9 +3,17 @@
 // Incoming parameters
 // Config - Build configuration. Note that we don't using 'Configuration' since it's used
 //          in the build scripts and this can cause problems.
+// Architecture - architecure to target in the build
 // Outerloop - If true, runs outerloop, if false runs just innerloop
 
 def submittedHelixJson = null
+
+// Now we depend on the tests build pipeline
+stage ('Build Tests') {
+    // Loads the other script so it can be invoked 
+    def buildTests = 'buildpipeline/portable-tests.groovy'
+    buildTests(Config)
+}
 
 simpleNode('Windows_NT','latest') {
     stage ('Checkout source') {
@@ -22,12 +30,10 @@ simpleNode('Windows_NT','latest') {
     }
     stage ('Build Product') {
         // Why is release always being passed?
-        bat ".\\build.cmd x64 ${Config} skiptests skipbuildpackages -skiprestore -disableoss -portable"
+        bat ".\\build.cmd ${Architecture} ${Config} skiptests skipbuildpackages -skiprestore -disableoss -portable"
     }
-    // Now we depend on the tests build pipeline
-    stage ('Build Tests') {
-        // Loads the other script so it can be invoked 
-        def buildTests = 'buildpipeline/portable-tests.groovy'
-        buildTests(Config)
+    // Build the packages
+    stage ('Build Packages') {
+        bat ".\\build-packages.cmd -BuildArch=${Architecture} -BuildType=${Config} -portable"
     }
 }

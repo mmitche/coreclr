@@ -17,8 +17,8 @@ def branch = GithubBranchName
 def windowsPipeline = Pipeline.createPipelineForGithub(this, project, branch, 'buildpipeline/portable-windows.groovy')
 ['netcoreapp'].each { targetGroup ->
 	[/*'Debug', 'Checked', */'Release'].each { configurationGroup ->
-		['Windows x64'].each { osName ->
-            def parameters = ['Config':configurationGroup, 'OuterLoop':false]
+		['x64'].each { architecture ->
+            def parameters = ['Config':configurationGroup, 'Architecture':architecture]
             windowsPipeline.triggerPipelineOnEveryGithubPR("${osName} ${configurationGroup} Build", "(?i).*test\\W+portable\\W+windows\\W+${configurationGroup}\\W+pipeline.*", parameters)
 		}
 	}
