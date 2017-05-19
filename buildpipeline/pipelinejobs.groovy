@@ -15,7 +15,7 @@ def branch = GithubBranchName
 def linuxPipeline = Pipeline.createPipelineForGithub(this, project, branch, 'buildpipeline/portable-linux.groovy')
 
 ['netcoreapp'].each { targetGroup ->
-	['Debug', 'Release'].each { configurationGroup ->
+	['Debug', 'Checked', 'Release'].each { configurationGroup ->
 		['Linux x64'].each { osName ->
             def parameters = ['Config':configurationGroup, 'OuterLoop':false]
             linuxPipeline.triggerPipelineOnGithubPRComment("${osName} ${configurationGroup} Build", "(?i).*test\\W+portable\\W+linux\\W+${configurationGroup}\\W+pipeline.*", parameters)
@@ -26,7 +26,7 @@ def linuxPipeline = Pipeline.createPipelineForGithub(this, project, branch, 'bui
 // Create a pipeline for portable windows
 def windowsPipeline = Pipeline.createPipelineForGithub(this, project, branch, 'buildpipeline/portable-windows.groovy')
 ['netcoreapp'].each { targetGroup ->
-	['Debug', 'Release'].each { configurationGroup ->
+	['Debug', 'Checked', 'Release'].each { configurationGroup ->
 		['Windows x64'].each { osName ->
             def parameters = ['Config':configurationGroup, 'OuterLoop':false]
             windowsPipeline.triggerPipelineOnGithubPRComment("${osName} ${configurationGroup} Build", "(?i).*test\\W+portable\\W+windows\\W+${configurationGroup}\\W+pipeline.*", parameters)
