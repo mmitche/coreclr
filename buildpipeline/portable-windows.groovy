@@ -12,7 +12,7 @@ def submittedHelixJson = null
 stage ('Build Tests') {
     // Loads the other script so it can be invoked 
     def buildTests = 'buildpipeline/portable-tests.groovy'
-    buildTests(Config)
+    buildTests(Config, Architecture)
 }
 
 simpleNode('Windows_NT','latest') {
