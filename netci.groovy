@@ -1673,13 +1673,7 @@ def static addTriggers(def job, def branch, def isPR, def architecture, def os, 
         // editor brace matching: }
 
         case 'armem': // editor brace matching: {
-            job.with {
-                publishers {
-                    azureVMAgentPostBuildAction {
-                        agentPostBuildAction('Delete agent if the build was not successful (when idle).')
-                    }
-                }
-            }
+            Utilities.deleteAgentAfterJob(job, true)
 
             switch (os) {
                 case 'Ubuntu':
@@ -2273,6 +2267,7 @@ def static calculateBuildCommands(def newJob, def scenario, def branch, def isPR
                         buildCommands += "docker run -i --rm -v \${WORKSPACE}:/opt/code -w /opt/code ${dockerImage} ./src/pal/tests/palsuite/runpaltests.sh /opt/code/bin/obj/${osGroup}.${architecture}.${configuration} /opt/code/bin/paltestout"
                         Utilities.addArchival(newJob, "bin/Product/**,bin/obj/*/tests/**/*.so", "bin/Product/**/.nuget/**")
                         Utilities.addXUnitDotNETResults(newJob, '**/pal_tests.xml')
+                        Utilities.deleteAgentAfterJob(newJob, false)
                         break
                     }
 
@@ -2419,6 +2414,7 @@ def static calculateBuildCommands(def newJob, def scenario, def branch, def isPR
                     buildCommands += "zip -r testnativebin.${lowerConfiguration}.zip ./bin/obj/Linux.arm.${configuration}/tests"
 
                     Utilities.addArchival(newJob, "coreroot.${lowerConfiguration}.zip,testnativebin.${lowerConfiguration}.zip", "")
+                    Utilities.deleteAgentAfterJob(newJob, false)
                     break
                 default:
                     println("Unknown architecture: ${architecture}");
@@ -3062,6 +3058,8 @@ def static CreateOtherTestJob(def dslFactory, def project, def branch, def archi
     }
 
     def jobFolder = getJobFolder(scenario)
+    def runDocker = isNeedDocker(architecture, os, false)
+
     def newJob = dslFactory.job(Utilities.getFullJobName(project, jobName, isPR, jobFolder)) {
         parameters {
             stringParam('CORECLR_WINDOWS_BUILD', '', 'Build number to copy CoreCLR Windows test binaries from')
@@ -3137,7 +3135,6 @@ def static CreateOtherTestJob(def dslFactory, def project, def branch, def archi
             }
 
             // Execute the tests
-            def runDocker = isNeedDocker(architecture, os, false)
             def dockerPrefix = ""
             def dockerCmd = ""
             if (runDocker) {
@@ -3196,6 +3193,11 @@ ${runScript} \\
         SummaryBuilder summaries = new SummaryBuilder()
         summaries.addLinksSummaryFromFile('Crash dumps from this run:', 'dumplings.txt')
         summaries.emit(newJob)
+    }
+
+    // If on docker, delete machine afterwards
+    if (runDocker) {
+        Utilities.deleteAgentAfterJob(newJob, false)
     }
 
     Utilities.addArchival(newJob, "bin/tests/${osGroup}.${architecture}.${configuration}/coreclrtests.*.txt")
